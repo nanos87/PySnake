@@ -1,45 +1,35 @@
 class Snake:
 
-    def __init__(self, x_range, y_range):
-        self.head = [x_range / 2, y_range / 2]
+    def __init__(self, court, scale):
+        self.head = list(map(lambda s: s/2, court))
         self.body = []
-        self.length = 0
-        self.is_grown = False
+        self.is_alive = True
+        self.__scale = scale
+        self.__court = court
     
-    def move(self, scale, vector = [0, 0]):
-        # save former head position 'copy method is needed to copy values not reference'
-        former_position = self.head.copy()
-        # move head by vector
-        for i in range(0,2,1):
-            self.head[i] += vector[i] * scale
+    def move(self, vector = [0, 0]):              
         # move body if exist
-        if self.length > 0:
-            if self.is_grown:
-                self.body.append(former_position)
-                self.is_grown = False
+        if len(self.body) > 0:
             # shift each body position element one element up the list
-            for i in range(0, self.length, 1):
-                if i < self.length - 1:
-                    self.body[i] = self.body[i + 1]
-                else:
-                    self.body[i] = former_position
+            self.body.append(self.head.copy())
+            self.body = self.body[-(len(self.body)-1):]
 
-    def eat(self, x_target, y_target):
-        if self.head == [x_target, y_target]:
-            self.length += 1
-            self.is_grown = True
-            return True
-        else:
-            return False
+        # move head by given vector
+        for i in range(0, len(vector)):
+            self.head[i] += vector[i] * self.__scale
 
-    def die(self, x_range, y_range, scale):
-        # check collision with walls
-        if self.head[0] >= x_range - scale or self.head[0] < scale:
+
+    def try_eat(self, food_position: [int]) -> bool:
+        if self.head == food_position:
+            self.grow()
             return True
-        elif self.head[1] >= y_range - scale or self.head[1] < scale:
-            return True
-        # check collision with snake body
-        for position in self.body:
-            if self.head[0] == position[0] and self.head[1] == position[1]:
-                return True
         return False
+
+    def grow(self):
+        self.body.append(self.head.copy())
+
+    def died(self) -> bool:
+        # check collision with walls or with snake body
+        self.is_alive = not (any([val >= ran - self.__scale or val < self.__scale for val, ran in zip(self.head, self.__court)]) 
+                or self.head in self.body)
+        return not self.is_alive
