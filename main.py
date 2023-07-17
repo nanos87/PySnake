@@ -54,6 +54,14 @@ while not stop_game:
     # check for game quit
     stop_game = len(pygame.event.get(pygame.QUIT)) > 0
 
+    # do not draw on every loop - reduces game speed
+    clock.tick(fps)
+    if not frame_counter == redraw_frames:
+        frame_counter += 1
+        continue
+    else:        
+        frame_counter = 0
+
     # only listen keydown events
     for event in pygame.event.get(pygame.KEYDOWN):
 
@@ -66,21 +74,18 @@ while not stop_game:
                 vector = VEC_RIGHT
             
         # handle snake movements
-        if event.key == pygame.K_UP and vector != VEC_DOWN and former_vector != VEC_DOWN:
+        if event.key == pygame.K_UP and vector != VEC_DOWN:
             vector = VEC_UP
-        elif event.key == pygame.K_DOWN and vector != VEC_UP and former_vector != VEC_UP:
+        elif event.key == pygame.K_DOWN and vector != VEC_UP:
             vector = VEC_DOWN
-        elif event.key == pygame.K_LEFT and vector != VEC_RIGHT and former_vector != VEC_RIGHT:
+        elif event.key == pygame.K_LEFT and vector != VEC_RIGHT:
             vector = VEC_LEFT
-        elif event.key == pygame.K_RIGHT and vector != VEC_LEFT and former_vector != VEC_LEFT:
+        elif event.key == pygame.K_RIGHT and vector != VEC_LEFT:
             vector = VEC_RIGHT
-    
-    clock.tick(fps)
-    if not frame_counter == redraw_frames:
-        frame_counter += 1
-        continue
-    else:        
-        frame_counter = 0
+
+        # solves issue with moving to opposite direction - maybe at costs of responsivnes?
+        pygame.event.clear()
+        break
 
     # clear screen
     window.fill(WHITE)
@@ -119,7 +124,6 @@ while not stop_game:
         # move snake by vector
         snake.move(vector)
         pygame.mixer.Sound.play(step)
-        former_vector = vector.copy()
 
         # draw snake head
         draw_square_object(snake.head, GREEN)
