@@ -14,15 +14,12 @@ VEC_UP = [0, -1]
 VEC_DOWN = [0, 1]
 VEC_LEFT = [-1, 0]
 VEC_RIGHT = [1, 0]
-VEC_INIT = [0, 0]
 
 # game flags
 stop_game = False            # True if game is active
 
 # window size
 window_size = (640,480)
-window_x = window_size[0]
-window_y = window_size[1]
 scale = 20
 
 # initialize game window
@@ -99,20 +96,20 @@ while not stop_game:
         font_title = pygame.font.Font('assets/Pixeled.ttf', scale * 2)
         title = font_title.render("My PySnake", True, GREEN, WHITE)
         title_rect = title.get_rect()
-        title_rect.center = (window_x / 2, window_y / 2 - 2 * scale)
+        title_rect.center = (window_size[0] / 2, window_size[1] / 2 - 2 * scale)
         window.blit(title, title_rect)
         # print 'press space to play'
         font_play = pygame.font.Font('assets/Pixeled.ttf', scale)
         play = font_play.render("Press SPACE to play", True, BLACK, WHITE)
         play_rect = play.get_rect()
-        play_rect.center = (window_x / 2, window_y / 2 + 3 * scale)
+        play_rect.center = (window_size[0] / 2, window_size[1] / 2 + 3 * scale)
         window.blit(play, play_rect)
 
     # play the game
     elif snake.is_alive:
         # draw apple if needed
         if not apple:
-            apple = Apple(*window_size, scale, snake.body)
+            apple = Apple(*window_size, scale, snake.get_nose_to_tail())
 
         draw_square_object(apple.position, RED)
         
@@ -143,19 +140,19 @@ while not stop_game:
         font_score = pygame.font.Font('assets/Pixeled.ttf', scale * 2)
         score = font_score.render("Score: {}".format(len(snake.body)), True, GREEN, WHITE)
         score_rect = score.get_rect()
-        score_rect.center = (window_x / 2, window_y / 2 - 2 * scale)
+        score_rect.center = (window_size[0] / 2, window_size[1] / 2 - 2 * scale)
         window.blit(score, score_rect)
         # print 'press space to play'
         font_play = pygame.font.Font('assets/Pixeled.ttf', scale)
         play = font_play.render("Press SPACE to play", True, BLACK, WHITE)
         play_rect = play.get_rect()
-        play_rect.center = (window_x / 2, window_y / 2 + 2 * scale)
+        play_rect.center = (window_size[0] / 2, window_size[1] / 2 + 2 * scale)
         window.blit(play, play_rect)
         # print 'press esc to quit'
         font_quit = pygame.font.Font('assets/Pixeled.ttf', scale)
         quit = font_quit.render("Press ESC to quit", True, RED, WHITE)
         quit_rect = quit.get_rect()
-        quit_rect.center = (window_x / 2, window_y / 2 + 5 * scale)
+        quit_rect.center = (window_size[0] / 2, window_size[1] / 2 + 5 * scale)
         window.blit(quit, quit_rect)
         
     
