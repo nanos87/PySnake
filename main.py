@@ -16,35 +16,37 @@ VEC_LEFT = [-1, 0]
 VEC_RIGHT = [1, 0]
 
 # game flags
-stop_game = False            # True if game is active
+stop_game = False  # True if game is active
 
 # window size
-window_size = (640,480)
+window_size = (640, 480)
 scale = 20
 
 # initialize game window
 pygame.init()
-pygame.display.set_caption('My PySnake')
+pygame.display.set_caption("My PySnake")
 window = pygame.display.set_mode(window_size)
 
 # set fps controller
 clock = pygame.time.Clock()
-fps = 50                    # number of mainloop repeats / second; Affects the keyboard responsivnes
-frame_counter = 0           
-redraw_frames = 5           # defines the number of frames without redrawing the snake; Controls the snake speed
+fps = 50  # number of mainloop repeats / second; Affects the keyboard responsivnes
+frame_counter = 0
+redraw_frames = 5  # defines the number of frames without redrawing the snake; Controls the snake speed
 
 # set soundfiles
-step = pygame.mixer.Sound('assets/Step.wav')
+step = pygame.mixer.Sound("assets/Step.wav")
 step.set_volume(0.1)
-eat = pygame.mixer.Sound('assets/Eat.wav')
-lose = pygame.mixer.Sound('assets/Lose.wav')
+eat = pygame.mixer.Sound("assets/Eat.wav")
+lose = pygame.mixer.Sound("assets/Lose.wav")
 
 snake = None
 apple = None
 
+
 def draw_square_object(pos: (int, int), color: pygame.Color):
     square = pygame.Rect(*pos, scale, scale)
     pygame.draw.rect(window, color, square)
+
 
 # gameloop
 while not stop_game:
@@ -56,12 +58,11 @@ while not stop_game:
     if not frame_counter == redraw_frames:
         frame_counter += 1
         continue
-    else:        
+    else:
         frame_counter = 0
 
     # only listen keydown events
     for event in pygame.event.get(pygame.KEYDOWN):
-
         # no snake available currently
         if not snake or not snake.is_alive:
             stop_game = event.key == pygame.K_ESCAPE
@@ -69,7 +70,7 @@ while not stop_game:
             if event.key == pygame.K_SPACE:
                 snake = Snake(window_size, scale)
                 vector = VEC_RIGHT
-            
+
         # handle snake movements
         if event.key == pygame.K_UP and vector != VEC_DOWN:
             vector = VEC_UP
@@ -93,13 +94,13 @@ while not stop_game:
     # welcome screen
     if not snake:
         # print title
-        font_title = pygame.font.Font('assets/Pixeled.ttf', scale * 2)
+        font_title = pygame.font.Font("assets/Pixeled.ttf", scale * 2)
         title = font_title.render("My PySnake", True, GREEN, WHITE)
         title_rect = title.get_rect()
         title_rect.center = (window_size[0] / 2, window_size[1] / 2 - 2 * scale)
         window.blit(title, title_rect)
         # print 'press space to play'
-        font_play = pygame.font.Font('assets/Pixeled.ttf', scale)
+        font_play = pygame.font.Font("assets/Pixeled.ttf", scale)
         play = font_play.render("Press SPACE to play", True, BLACK, WHITE)
         play_rect = play.get_rect()
         play_rect.center = (window_size[0] / 2, window_size[1] / 2 + 3 * scale)
@@ -112,7 +113,7 @@ while not stop_game:
             apple = Apple(*window_size, scale, snake.get_nose_to_tail())
 
         draw_square_object(apple.position, RED)
-        
+
         # destroy apple if its in snakes mouth
         if snake.try_eat(apple.position):
             pygame.mixer.Sound.play(eat)
@@ -124,7 +125,7 @@ while not stop_game:
 
         # draw snake head
         draw_square_object(snake.head, GREEN)
-        
+
         # draw snake body if exist
         for position in snake.body:
             draw_square_object(position, BODYGREEN)
@@ -137,24 +138,25 @@ while not stop_game:
     # game over
     else:
         # print score
-        font_score = pygame.font.Font('assets/Pixeled.ttf', scale * 2)
-        score = font_score.render("Score: {}".format(len(snake.body)), True, GREEN, WHITE)
+        font_score = pygame.font.Font("assets/Pixeled.ttf", scale * 2)
+        score = font_score.render(
+            "Score: {}".format(len(snake.body)), True, GREEN, WHITE
+        )
         score_rect = score.get_rect()
         score_rect.center = (window_size[0] / 2, window_size[1] / 2 - 2 * scale)
         window.blit(score, score_rect)
         # print 'press space to play'
-        font_play = pygame.font.Font('assets/Pixeled.ttf', scale)
+        font_play = pygame.font.Font("assets/Pixeled.ttf", scale)
         play = font_play.render("Press SPACE to play", True, BLACK, WHITE)
         play_rect = play.get_rect()
         play_rect.center = (window_size[0] / 2, window_size[1] / 2 + 2 * scale)
         window.blit(play, play_rect)
         # print 'press esc to quit'
-        font_quit = pygame.font.Font('assets/Pixeled.ttf', scale)
+        font_quit = pygame.font.Font("assets/Pixeled.ttf", scale)
         quit = font_quit.render("Press ESC to quit", True, RED, WHITE)
         quit_rect = quit.get_rect()
         quit_rect.center = (window_size[0] / 2, window_size[1] / 2 + 5 * scale)
         window.blit(quit, quit_rect)
-        
-    
+
     # update window
     pygame.display.update()
