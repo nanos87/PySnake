@@ -1,4 +1,4 @@
-name: Build Space Invaders with Pygbag
+name: Build PySnake with Pygbag
 on:
   push:
     branches:
